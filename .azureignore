@@ -1,0 +1,11 @@
+.git
+.vscode
+src
+prisma
+tests
+.eslint*
+.prettier*
+*.md
+Dockerfile
+docker-compose*
+node_modules/.cache
