@@ -74,20 +74,6 @@ jobs:
           echo "node_modules verified: $(du -sh node_modules | cut -f1)"
           ls -la node_modules | head -20
 
-      - name: Create startup script
-        run: |
-          cat > startup.sh << 'EOF'
-          #!/bin/bash
-          # Ensure Prisma client is generated
-          if [ ! -d "node_modules/.prisma" ]; then
-            echo "Generating Prisma client..."
-            npx prisma generate
-          fi
-          # Start the application
-          npm start
-          EOF
-          chmod +x startup.sh
-
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -96,7 +82,7 @@ jobs:
           slot-name: "Production"
           package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9819404B8AD64F7A9742EAA086D5CE49 }}
-          startup-command: "bash startup.sh"
+          startup-command: "node dist/src/main.js"
 # ----------------------------------------
 # name: Deploy NestJS Backend
 
