@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
@@ -12,9 +15,20 @@ async function bootstrap() {
 		.build();
 	const documentFactory = () => SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup("api", app, documentFactory);
+	const allowedOrigins = process.env.CORS_ORIGINS?.split(",") ?? [];
 
 	app.enableCors({
-		origin: "http://localhost:5173",
+		origin: (origin, callback) => {
+			if (!origin) {
+				return callback(null, true);
+			}
+
+			if (allowedOrigins.includes(origin)) {
+				return callback(null, true);
+			}
+
+			return callback(new Error(`CORS blocked for origin: ${origin}`), false);
+		},
 		credentials: true,
 	});
 
