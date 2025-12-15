@@ -55,3 +55,8 @@ jobs:
           app-name: "quize-builder-backend"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9819404B8AD64F7A9742EAA086D5CE49 }}
           package: .
+
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
